@@ -1,0 +1,54 @@
+/*Verilog Code for 4x1 Multiplexer */
+
+module mux4to1 (
+    input wire [3:0] d, // 4-bit data input
+    input wire [1:0] sel, // 2-bit select input
+    output reg y // output
+);
+    always @(*) begin
+        case (sel)
+            2'b00: y = d[0];
+            2'b01: y = d[1];
+            2'b10: y = d[2];
+            2'b11: y = d[3];
+            default: y = 1'b0; // default case
+        endcase
+    end
+endmodule
+
+
+/* TestBench Code */
+
+module tb_mux4to1;
+    reg [3:0] d; // 4-bit data input
+    reg [1:0] sel; // 2-bit select input
+    wire y; // output
+
+    // Instantiate the MUX module
+    mux4to1 uut (
+        .d(d),
+        .sel(sel),
+        .y(y)
+    );
+
+    initial begin
+        // Display headers for the simulation
+        $display("Time\t sel\t d\t y");
+        $monitor("%0t\t %b\t %b\t %b", $time, sel, d, y);
+
+        // Test case 1
+        d = 4'b1010; sel = 2'b00; #10; // Expect y = d[0] = 1'b0
+        d = 4'b1010; sel = 2'b01; #10; // Expect y = d[1] = 1'b1
+        d = 4'b1010; sel = 2'b10; #10; // Expect y = d[2] = 1'b0
+        d = 4'b1010; sel = 2'b11; #10; // Expect y = d[3] = 1'b1
+
+        // Test case 2
+        d = 4'b1100; sel = 2'b00; #10; // Expect y = d[0] = 1'b0
+        d = 4'b1100; sel = 2'b01; #10; // Expect y = d[1] = 1'b0
+        d = 4'b1100; sel = 2'b10; #10; // Expect y = d[2] = 1'b1
+        d = 4'b1100; sel = 2'b11; #10; // Expect y = d[3] = 1'b1
+
+        $finish;
+    end
+endmodule
+
